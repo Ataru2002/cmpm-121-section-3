@@ -9,6 +9,8 @@ export default class Play extends Phaser.Scene {
 
   starfield?: Phaser.GameObjects.TileSprite;
   spinner?: Phaser.GameObjects.Shape;
+  enemy?: Phaser.GameObjects.Shape;
+  enemy2?: Phaser.GameObjects.Shape;
 
   rotationSpeed = Phaser.Math.PI2 / 1000; // radians per millisecond
 
@@ -52,6 +54,15 @@ export default class Play extends Phaser.Scene {
     this.spinner = this.add
       .rectangle(x, y, width, height, color)
       .setOrigin(starter, starter);
+
+    const colore = 0x63264a;
+    const widthe = 50;
+    const heighte = 50;
+    const xe = (this.game.config.width as number) - width;
+    const ye = 0;
+    this.enemy = this.add
+      .rectangle(xe, ye, widthe, heighte, colore)
+      .setOrigin(starter, starter);
   }
 
   update(_timeMs: number, delta: number) {
@@ -62,14 +73,16 @@ export default class Play extends Phaser.Scene {
       this.spinner!.y -= 1;
     } else {
       if (this.left!.isDown) {
-        this.spinner!.rotation -= delta * this.rotationSpeed;
+        this.spinner!.x -= delta;
       }
       if (this.right!.isDown) {
-        this.spinner!.rotation += delta * this.rotationSpeed;
+        this.spinner!.x += delta;
       }
     }
 
+    this.enemy!.x -= 1;
     this.spawn();
+    this.spawne();
 
     if (this.fire!.isDown) {
       const leftBound = 1.5;
@@ -90,6 +103,11 @@ export default class Play extends Phaser.Scene {
       this.isFire = false;
       this.spinner!.y =
         (this.game.config.height as number) - this.spinner!.height;
+    }
+  }
+  spawne() {
+    if (this.enemy!.x <= 0) {
+      this.enemy!.x = (this.game.config.width as number) - this.enemy!.width;
     }
   }
 }
