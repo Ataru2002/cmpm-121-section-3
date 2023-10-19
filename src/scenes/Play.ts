@@ -31,21 +31,29 @@ export default class Play extends Phaser.Scene {
     this.left = this.#addKey("LEFT");
     this.right = this.#addKey("RIGHT");
 
+
+    const starter = 0;
     this.starfield = this.add
       .tileSprite(
-        0,
-        0,
+        starter,
+        starter,
         this.game.config.width as number,
         this.game.config.height as number,
         "starfield",
       )
-      .setOrigin(0, 0);
-
-    this.spinner = this.add.rectangle(100, 100, 50, 50, 0xff0000);
+      .setOrigin(starter, starter);
+    
+    const color = 0xff0000;
+    const x = 100;
+    const y = 100;
+    const width = 50;
+    const height = 50;
+    this.spinner = this.add.rectangle(x, y, width, height, color);
   }
 
   update(_timeMs: number, delta: number) {
-    this.starfield!.tilePositionX -= 4;
+    const transform = 4;
+    this.starfield!.tilePositionX -= transform;
 
     if (this.left!.isDown) {
       this.spinner!.rotation -= delta * this.rotationSpeed;
@@ -55,10 +63,13 @@ export default class Play extends Phaser.Scene {
     }
 
     if (this.fire!.isDown) {
+      const leftBound = 1.5;
+      const rightBound = 1;
+      const timer = 300;
       this.tweens.add({
         targets: this.spinner,
-        scale: { from: 1.5, to: 1 },
-        duration: 300,
+        scale: { from: leftBound, to: rightBound },
+        duration: timer,
         ease: Phaser.Math.Easing.Sine.Out,
       });
     }
