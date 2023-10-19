@@ -31,7 +31,6 @@ export default class Play extends Phaser.Scene {
     this.left = this.#addKey("LEFT");
     this.right = this.#addKey("RIGHT");
 
-
     const starter = 0;
     this.starfield = this.add
       .tileSprite(
@@ -42,10 +41,10 @@ export default class Play extends Phaser.Scene {
         "starfield",
       )
       .setOrigin(starter, starter);
-    
+
     const color = 0xff0000;
-    const x = 100;
-    const y = 100;
+    const x = this.game.config.width as number;
+    const y = this.game.config.height as number;
     const width = 50;
     const height = 50;
     this.spinner = this.add.rectangle(x, y, width, height, color);
