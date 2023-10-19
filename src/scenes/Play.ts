@@ -12,6 +12,8 @@ export default class Play extends Phaser.Scene {
 
   rotationSpeed = Phaser.Math.PI2 / 1000; // radians per millisecond
 
+  isFire?: boolean;
+
   constructor() {
     super("play");
   }
@@ -43,34 +45,51 @@ export default class Play extends Phaser.Scene {
       .setOrigin(starter, starter);
 
     const color = 0xff0000;
-    const x = this.game.config.width as number;
-    const y = this.game.config.height as number;
     const width = 50;
     const height = 50;
-    this.spinner = this.add.rectangle(x, y, width, height, color);
+    const x = (this.game.config.width as number) - width;
+    const y = (this.game.config.height as number) - height;
+    this.spinner = this.add
+      .rectangle(x, y, width, height, color)
+      .setOrigin(starter, starter);
   }
 
   update(_timeMs: number, delta: number) {
     const transform = 4;
     this.starfield!.tilePositionX -= transform;
 
-    if (this.left!.isDown) {
-      this.spinner!.rotation -= delta * this.rotationSpeed;
+    if (this.isFire) {
+      this.spinner!.y -= 1;
+    } else {
+      if (this.left!.isDown) {
+        this.spinner!.rotation -= delta * this.rotationSpeed;
+      }
+      if (this.right!.isDown) {
+        this.spinner!.rotation += delta * this.rotationSpeed;
+      }
     }
-    if (this.right!.isDown) {
-      this.spinner!.rotation += delta * this.rotationSpeed;
-    }
+
+    this.spawn();
 
     if (this.fire!.isDown) {
       const leftBound = 1.5;
       const rightBound = 1;
       const timer = 300;
+      this.isFire = true;
       this.tweens.add({
         targets: this.spinner,
         scale: { from: leftBound, to: rightBound },
         duration: timer,
         ease: Phaser.Math.Easing.Sine.Out,
       });
+    }
+  }
+
+  spawn() {
+    if (this.spinner!.y <= 0) {
+      this.isFire = false;
+      this.spinner!.y =
+        (this.game.config.height as number) - this.spinner!.height;
     }
   }
 }
